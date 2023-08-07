@@ -1,0 +1,20 @@
+{
+  "name": "online-shop",
+  "version": "1.0.0",
+  "description": "This is the online shopping application",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server",
+    "server": "nodemon backend/server.js"
+  },
+  "author": "Abraham Mzansie Nkomo",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "nodemon": "^3.0.1"
+  }
+}
