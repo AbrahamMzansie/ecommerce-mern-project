@@ -1,35 +1,29 @@
-import React , {useEffect , useState} from "react";
-import axios from "axios";
+import React from "react";
 import { Link } from "react-router-dom";
-import {
-  Row,
-  Col,
-  Image,
-  ListGroup,
-  Card,
-  Button,
-} from "react-bootstrap";
+import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import Rating from "../components/Rating";
+import { useGetPorductByIdQuery } from "../slices/productSlice";
+import Loader from "../components/Loader";
+import Message from "../components/Message";
 
 const ProductDetailSreen = () => {
-  const [product, setProduct] = useState({});
   const { id: productId } = useParams();
-
-  useEffect(()=>{
-   const  fetchProduct = async()=>{
-      const {data} = await axios.get(`/api/products/${productId}`);     
-      setProduct(data);
-    }
-    fetchProduct();
-  }, [productId])
+  const { data: product, isLoading, error } = useGetPorductByIdQuery(productId);
+  
 
   return (
     <>
-      <Link className="btn btn-light my-3" to="/">
+     <Link className="btn btn-light my-3" to="/">
         Home
       </Link>
-      <Row>
+      {isLoading ? (
+        <Loader />
+      ) : error ? (
+        <Message variant = "danger">{error?.data?.message || error?.error}</Message>
+      ) : (
+       <>
+       <Row>
         <Col md={5}>
           <Image src={product.image} alt={product.name} fluid />
         </Col>
@@ -39,8 +33,8 @@ const ProductDetailSreen = () => {
               <h1>{product.name}</h1>
             </ListGroup.Item>
             <ListGroup.Item>
-                <strong>Description {product.description}</strong>
-              </ListGroup.Item>
+              <strong>Description {product.description}</strong>
+            </ListGroup.Item>
             <ListGroup.Item>
               <Rating
                 value={product.rating}
@@ -60,7 +54,7 @@ const ProductDetailSreen = () => {
                   </Col>
                 </Row>
               </ListGroup.Item>
-              
+
               <ListGroup.Item>
                 <Row>
                   <Col>Status</Col>
@@ -84,6 +78,9 @@ const ProductDetailSreen = () => {
           </Card>
         </Col>
       </Row>
+       </>
+      )} 
+      
     </>
   );
 };
