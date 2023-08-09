@@ -48,7 +48,7 @@ const CartScreen = () => {
         ) : (
           <ListGroup variant="flush">
             {cartItems.map((item) => (
-              <ListGroupItem key={item.id}>
+              <ListGroupItem key={item._id}>
                 <Row>
                   <Col md={2}>
                     <Image src={item.image} alt={item.name} fluid />
@@ -98,10 +98,11 @@ const CartScreen = () => {
          SubTotal ({cartItems.reduce((acc, item) => acc + item.qty, 0)})
          items
        </h2>
-       ${" "}
+       <strong> ${" "}
        {cartItems
          .reduce((acc, item) => acc + item.qty * item.price, 0)
-         .toFixed(2)}
+         .toFixed(2)}</strong>
+      
      </ListGroupItem>
      <ListGroupItem>
        <Button

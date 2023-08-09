@@ -1,7 +1,7 @@
 import React from "react";
 import Spinner from "react-bootstrap/Spinner";
 
-const Loader = () => {
+const Loader = ({width = "200px" , height = "200px"}) => {
   return (
     <Spinner
       style={{
@@ -9,8 +9,8 @@ const Loader = () => {
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        width: "200px",
-        height: "200px",
+        width: width,
+        height: height
       }}
       animation="grow"
     />

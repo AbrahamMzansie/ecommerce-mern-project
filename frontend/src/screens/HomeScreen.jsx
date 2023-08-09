@@ -4,13 +4,14 @@ import { useGetProductsQuery } from "../slices/productSlice";
 import Product from "../components/Product";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import { useSelector } from "react-redux";
 
 const HomeScreen = () => {
+
   const { data: productsList, isLoading, error } = useGetProductsQuery();
+  
 
-  console.log(error)
-
-  return (
+   return (
     <>
       {isLoading ? (
       <Loader />
