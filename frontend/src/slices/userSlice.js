@@ -23,8 +23,10 @@ export const usersSlice = apiSlice.injectEndpoints({
 
 
     register: builder.mutation({
-      query: (productId) => ({
-        url: `${USERS_URL}/${productId}`,
+      query: (data) => ({
+        url: `${USERS_URL}/`,
+        method : "POST",
+        body: data,
       }),
       keepUnusedDataFor: 5,
     }),
