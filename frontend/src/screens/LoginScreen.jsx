@@ -30,10 +30,10 @@ const LoginScreen = () => {
     e.preventDefault();
     try {
       const response = await login({ email, password }).unwrap();
-          dispatch(setCredentials({ ...response }));
+      dispatch(setCredentials({ ...response }));
       navigate(redirect);
     } catch (error) {
-      toast.error(error.data.message || error.error);      
+      toast.error(error.data.message || error.error);
     }
   };
   return (
@@ -58,13 +58,19 @@ const LoginScreen = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </Form.Group>
-        <Button disabled={isLoading} type="submit" variant="primary" className="mt-2 px-4">
-          {isLoading ? <Spinner animation="border" size="sm"/> : "Sign In"}
+        <Button
+          disabled={isLoading}
+          type="submit"
+          variant="primary"
+          className="mt-2 px-4"
+        >
+          {isLoading ? <Spinner animation="border" size="sm" /> : "Sign In"}
         </Button>
       </Form>
       <Row className="py-3">
         <Col>
-          New Customer?  <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>
+          New Customer?{" "}
+          <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>
             Register
           </Link>
         </Col>

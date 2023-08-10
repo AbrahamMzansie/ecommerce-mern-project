@@ -10,6 +10,7 @@ const getProducts = asyncHandler(async (req , res)=>{
 
 
 const getProductById = asyncHandler(async (req , res)=>{
+    console.log(req.params.id);
     const product = await ProductModel.findById(req.params.id);
     if (product) {
      return res.status(200).json(product);

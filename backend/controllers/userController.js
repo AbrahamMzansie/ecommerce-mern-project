@@ -80,6 +80,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
 const updateUserProfile = asyncHandler(async (req, res) => {
   const user = await UserModel.findById(req.user._id);
+
   if (user) {
     user.name = req.body.name || user._id;
     user.email = req.body.email || user.email;

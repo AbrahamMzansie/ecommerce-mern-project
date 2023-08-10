@@ -23,14 +23,59 @@ import Loader from "../components/Loader";
 
 const OrderDetailsScreen = () => {
   const { id: orderId } = useParams();
-  const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation;
-  const [order, payPalDispatch] = usePayPalScriptReducer();
-  const { userInfo } = useSelector((state) => state.auth);
+  const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+  const [{ isPending }, payPalDispatch] = usePayPalScriptReducer();
   const {
     data: payPal,
     isLoading: loadingPayPal,
     error: errorPayPal,
-  } = useGetPayPalClientIDQuery;
+  } = useGetPayPalClientIDQuery();
+  const {
+    data: orderDetails,
+    refetch,
+    isLoading,
+    error,
+  } = useGetOrderDetailsQuery(orderId);
+  const { userInfo } = useSelector((state) => state.auth);
+
+  const onApproveTest = async () => {
+    await payOrder({
+      orderId,
+      details: { payer: {} },
+    });
+    refetch();
+    toast.success("Payment Successfull");
+  };
+  const createOrder = (data, actions) => {  
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: orderDetails.totalPrice },
+          },
+        ],
+      })
+      .then((orderID) => {
+        return orderID;
+      });
+  };
+  const onApprove = (data, actions) => {
+    return actions.order.capture().then(async function (details) {
+      try {
+        await payOrder({
+          orderId,
+          details,
+        });
+        refetch();
+        toast.success("Payment Successfull");
+      } catch (error) {
+        toast.error(error.data.message || error.error);
+      }
+    });
+  };
+  function onError(error) {
+    toast.error(error.message || error.error);
+  }
 
   useEffect(() => {
     if (!errorPayPal && !loadingPayPal && payPal.clientId) {
@@ -47,15 +92,14 @@ const OrderDetailsScreen = () => {
           value: "pending",
         });
       };
+      if (orderDetails && !orderDetails.isPaid) {
+        if (!window.paypal) {
+          loadPayPalScript();
+        }
+      }
     }
-  }, []);
-  const {
-    data: orderDetails,
-    refetch,
-    isLoading,
-    error,
-  } = useGetOrderDetailsQuery(orderId);
-  console.log(orderDetails);
+  }, [orderDetails, payPal, payPalDispatch, loadingPayPal, errorPayPal]);
+
   if (isLoading) {
     return <Loader />;
   }
@@ -115,7 +159,7 @@ const OrderDetailsScreen = () => {
                       <Image src={item.image} alt={item.name} fluid rounded />
                     </Col>
                     <Col md={4}>
-                      <Link to={`/product/${item._id}`}>{item.name}</Link>
+                      <Link to={`/product/${item.product}`}>{item.name}</Link>
                     </Col>
                     <Col>
                       <strong>Price : </strong>
@@ -189,6 +233,30 @@ const OrderDetailsScreen = () => {
                   )}
                 </Button> */}
               </ListGroupItem>
+              {!orderDetails.isPaid && (
+                <ListGroupItem>
+                  {loadingPay && <Spinner animation="border" size="sm" />}
+                  {isPending ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    <div>
+                      {/* <Button
+                        style={{ marginBottom: "10px" }}
+                        onClick={onApproveTest}
+                      >
+                        Test Pay Order
+                      </Button> */}
+                      <div>
+                        <PayPalButtons
+                          createOrder={createOrder}
+                          onApprove={onApprove}
+                          onError={onError}
+                        ></PayPalButtons>
+                      </div>
+                    </div>
+                  )}
+                </ListGroupItem>
+              )}
             </ListGroup>
           </Card>
         </Col>
