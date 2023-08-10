@@ -45,13 +45,10 @@ const PlaceOrderScreen = () => {
         taxPrice: cart.taxPrice,
         shippingPrice: cart.shippingPice,
         totalPrice: cart.totalPrice,
-      }).unwrap();
-      console.log("RESPONSE", response);
+      }).unwrap();    
       dispatch(clearCartItems());
-      navigate(`/order/${response._id}`);
-      console.log("CART DATA" , cart);
-    } catch (error) {
-      console.log("MMMMMMMMMM", error);
+      navigate(`/order/${response._id}`);     
+    } catch (error) {    
       toast.error(error.data.message || error.error);
     }
   };
