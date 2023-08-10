@@ -14,10 +14,10 @@ const PaymentScreen = () => {
   const { shippingAddress } = cart;
 
   useEffect(() => {
-    if (!shippingAddress) {
+    if (!shippingAddress.address) {
       navigate("/shipping");
     }
-  }, [shippingAddress, navigate]);
+  }, [shippingAddress.address, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
