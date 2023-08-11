@@ -4,9 +4,9 @@ import {
   createBrowserRouter,
   Route,
   RouterProvider,
-  createRoutesFromElements,  
+  createRoutesFromElements,
 } from "react-router-dom";
-import {PayPalScriptProvider} from "@paypal/react-paypal-js";
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import "./assets/styles/index.css";
 import "./assets/styles/bootstrap.custom.css";
 import { Provider } from "react-redux";
@@ -24,6 +24,9 @@ import PaymentScreen from "./screens/PaymentScreen";
 import PlaceOrderScreen from "./screens/PlaceOrderScreen";
 import OrderDetailsScreen from "./screens/OrderDetailsScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import AdminPrivateRoutes from "./components/AdminPrivateRoutes";
+import OrderListScreen from "./screens/admin/OrderListScreen";
+import ProductListScreen from "./screens/admin/ProductListScreen";
 
 const route = createBrowserRouter(
   createRoutesFromElements(
@@ -32,14 +35,19 @@ const route = createBrowserRouter(
       <Route path="/product/:id" element={<ProductDetailScreen />} />
       <Route path="/cart" element={<CartScreen />} />
       <Route path="/login" element={<LoginScreen />} />
-      <Route path="/register" element={<RegisterScreen />} />      
+      <Route path="/register" element={<RegisterScreen />} />
 
-      <Route path="" element={<PrivateRoutes />}> 
-      <Route path="/shipping" element={<ShippingScreen />} />
-      <Route path="/payment-method" element={<PaymentScreen />} />
-      <Route path="/place-order" element={<PlaceOrderScreen />} />
-      <Route path="/order/:id" element={<OrderDetailsScreen />} />
-      <Route path="/profile" element={<ProfileScreen />} />
+      <Route path="" element={<PrivateRoutes />}>
+        <Route path="/shipping" element={<ShippingScreen />} />
+        <Route path="/payment-method" element={<PaymentScreen />} />
+        <Route path="/place-order" element={<PlaceOrderScreen />} />
+        <Route path="/order/:id" element={<OrderDetailsScreen />} />
+        <Route path="/profile" element={<ProfileScreen />} />
+      </Route>
+
+      <Route path="" element={<AdminPrivateRoutes />}>
+        <Route path="/admin/order-list" element={<OrderListScreen />} />
+        <Route path="/admin/product-list" element={<ProductListScreen />} />
       </Route>
     </Route>
   )
@@ -49,8 +57,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <PayPalScriptProvider deferLoading = {true}>
-      <RouterProvider router={route} />
+      <PayPalScriptProvider deferLoading={true}>
+        <RouterProvider router={route} />
       </PayPalScriptProvider>
     </Provider>
   </React.StrictMode>

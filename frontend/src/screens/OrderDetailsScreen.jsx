@@ -18,12 +18,15 @@ import {
   useGetOrderDetailsQuery,
   useGetPayPalClientIDQuery,
   usePayOrderMutation,
+  useUpdateOrderToDeliveredMutation,
 } from "../slices/orderSlice";
 import Loader from "../components/Loader";
 
 const OrderDetailsScreen = () => {
   const { id: orderId } = useParams();
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+  const [updateOrderToDelivered, { isLoading: loadingUpdateDelivered }] =
+    useUpdateOrderToDeliveredMutation();
   const [{ isPending }, payPalDispatch] = usePayPalScriptReducer();
   const {
     data: payPal,
@@ -38,6 +41,17 @@ const OrderDetailsScreen = () => {
   } = useGetOrderDetailsQuery(orderId);
   const { userInfo } = useSelector((state) => state.auth);
 
+  const markDeliveredHandler = async () => {
+    try {
+      const response = await updateOrderToDelivered(orderId);
+      console.log(response);
+      refetch();
+      toast.success("Order marked as delivered");
+    } catch (error) {
+      toast.error(error.data.message || error.message);
+    }
+  };
+
   const onApproveTest = async () => {
     await payOrder({
       orderId,
@@ -46,7 +60,7 @@ const OrderDetailsScreen = () => {
     refetch();
     toast.success("Payment Successfull");
   };
-  const createOrder = (data, actions) => {  
+  const createOrder = (data, actions) => {
     return actions.order
       .create({
         purchase_units: [
@@ -257,6 +271,28 @@ const OrderDetailsScreen = () => {
                   )}
                 </ListGroupItem>
               )}
+
+              {userInfo &&
+                userInfo.isAdmin &&
+                orderDetails.isPaid &&
+                !orderDetails.isDelivered && (
+                  <ListGroupItem>
+                    <Button
+                    disabled={loadingUpdateDelivered}
+                      onClick={markDeliveredHandler}
+                      className="btn btn-block"
+                    >
+                      {loadingUpdateDelivered ? (
+                        <>
+                          <Spinner />
+                          {"processing"}
+                        </>
+                      ) : (
+                        "Mark Delivered"
+                      )}
+                    </Button>
+                  </ListGroupItem>
+                )}
             </ListGroup>
           </Card>
         </Col>

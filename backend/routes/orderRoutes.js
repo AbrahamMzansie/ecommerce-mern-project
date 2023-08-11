@@ -15,6 +15,6 @@ orderRoutes.route("/").post(protect, addOrderItems).get(protect, isAdmin, getAll
 orderRoutes.route("/mine").get(protect , getMyOrders);
 orderRoutes.route("/:id").get(protect  ,  getOrderById);
 orderRoutes.route("/:id/pay").put(protect , updateOrderToPaid);
-orderRoutes.route("/:id/deliver").put(protect , updateOrderToDelivered);
+orderRoutes.route("/:id/delivered").put(protect ,isAdmin ,  updateOrderToDelivered);
 
 export default orderRoutes;
