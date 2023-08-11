@@ -101,23 +101,59 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
-  // const products = await UserModel.find({});
-  res.send("get users");
+  const users = await UserModel.find({});
+  if (users) {
+    res.status(200).send(users);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 const getUserById = asyncHandler(async (req, res) => {
-  // const products = await UserModel.find({});
-  res.send("get users by id");
+  const users = await UserModel.find(req.user.id).select("-password");
+  if (users) {
+    res.status(200).send(users);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
-  // const products = await UserModel.find({});
-  res.send("user deleted successfully");
+  const deleteUser = await UserModel.findById(req.params.id);
+  if (deleteUser) {
+    if (deleteUser.isAdmin) {
+      res.status(400);
+      throw new Error("You cannot delete a admin user");
+    }
+  }
+  const user = await UserModel.deleteOne({ _id: req.params.id });
+  if (user.deletedCount === 1) {
+    return res.status(200).json(user);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 const updateUser = asyncHandler(async (req, res) => {
-  // const products = await UserModel.find({});
-  res.send("update user");
+  const user = await UserModel.findById(req.params.id);
+  if (user) {
+    user.name = req.body.name || user._id;
+    user.email = req.body.email || user.email;
+    user.isAdmin = Boolean(req.body.isAdmin) || user.isAdmin;
+    const updatedUser = await user.save();
+    res.status(200).json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
 });
 
 export {

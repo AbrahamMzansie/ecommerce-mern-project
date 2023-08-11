@@ -7,8 +7,7 @@ const getProducts = asyncHandler(async (req, res) => {
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
-  const product = await ProductModel.deleteOne(req.params.id);
-  console.log('MMMMMMMMMMMMMMMM');
+  const product = await ProductModel.deleteOne({_id : req.params.id});
   if (product.deletedCount === 1) {
     return res.status(200).json(product);
   } else {

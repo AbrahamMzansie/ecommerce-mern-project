@@ -39,11 +39,12 @@ const ProductListScreen = () => {
     try {
       await deleteProduct(productId).unwrap();
       toast.success("product deleted Successfully");
+      refetch();
     } catch (error) {
       toast.error(error?.data.message || error.error);
     }
 
-    refetch();
+   
   };
   if (isLoadingProducts) {
     return <Loader />;

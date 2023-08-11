@@ -6,18 +6,23 @@ import { toast } from "react-toastify";
 import {
   useUpdateProductMutation,
   useGetPorductByIdQuery,
-  useUploadProductImageMutation
+  useUploadProductImageMutation,
 } from "../../slices/productSlice";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 
 const ProductEditScreen = () => {
   const { id: productId } = useParams();
-  const { data: product, isLoading, error , refetch } = useGetPorductByIdQuery(productId);
+  const {
+    data: product,
+    isLoading,
+    error,
+    refetch,
+  } = useGetPorductByIdQuery(productId);
   const [updateProduct, { isLoading: isLoadingUpdateProduct }] =
     useUpdateProductMutation();
 
-    const [uploadProductImage, { isLoading: isLoadingUploadProductImage }] =
+  const [uploadProductImage, { isLoading: isLoadingUploadProductImage }] =
     useUploadProductImageMutation();
 
   const [name, setName] = useState("");
@@ -29,24 +34,21 @@ const ProductEditScreen = () => {
   const [image, setImage] = useState("");
   const navigate = useNavigate();
 
-  const uploadImageHandler = async(e) =>{
+  const uploadImageHandler = async (e) => {
+    console.log("MMMMMMMMMMMMMMMMM");
     const formData = new FormData();
-    formData.append("image", e.target.value[0]);
+    console.log("MMMMMMMMMMMMMMMMM", e.target.files[0]);
+    formData.append("image", e.target.files[0]);
     try {
-        const response = await uploadProductImage(formData).unwrap();
-        console.log(response);
-        toast.success("Product updated Successfull");
-        setImage(response.image);
+      const response = await uploadProductImage(formData).unwrap();
+      console.log(response);
+      toast.success("Product updated Successfull");
+      setImage(response.image);
     } catch (error) {
-        toast.error(error.data.message || error.error); 
+      console.log(error);
+      toast.error(error.data.message || error.error);
     }
-      uploadProductImage({
-      variables: {
-        productId,
-        image: formData
-      }
-    });
-  }
+  };
 
   useEffect(() => {
     if (product) {
@@ -64,17 +66,18 @@ const ProductEditScreen = () => {
     e.preventDefault();
     try {
       const response = await updateProduct({
-        _id : productId,
+        _id: productId,
         name,
         description,
         price,
         category,
         countInStock,
         brand,
+        image
       }).unwrap();
       refetch();
       toast.success("Product updated Successfull");
-      navigate("/admin/product-list");     
+      navigate("/admin/product-list");
     } catch (error) {
       toast.error(error.data.message || error.error);
     }
@@ -162,9 +165,12 @@ const ProductEditScreen = () => {
             />
             <Form.Control
               type="file"
-              label="Choose a file"              
+              label="Choose a file"
               onChange={uploadImageHandler}
             />
+            {isLoadingUploadProductImage && (
+              <Spinner animation="border" size="sm" />
+            )}
           </Form.Group>
           <Button
             disabled={isLoadingUpdateProduct}
@@ -173,9 +179,10 @@ const ProductEditScreen = () => {
             className="mt-2 px-4"
           >
             {isLoadingUpdateProduct ? (
-                <>
-                 <Spinner animation="border" size="sm" />{"processing"}
-                </>             
+              <>
+                <Spinner animation="border" size="sm" />
+                {"processing"}
+              </>
             ) : (
               "Edit Porduct"
             )}
