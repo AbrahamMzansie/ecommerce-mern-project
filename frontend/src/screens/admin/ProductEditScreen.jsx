@@ -87,7 +87,7 @@ const ProductEditScreen = () => {
     return <Loader />;
   }
   if (error) {
-    return <Message variant="danger">{error.message}</Message>;
+    return <Message variant="danger">{error.data.message || error.error}</Message>;
   }
   return (
     <>

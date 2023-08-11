@@ -48,7 +48,7 @@ const OrderDetailsScreen = () => {
       refetch();
       toast.success("Order marked as delivered");
     } catch (error) {
-      toast.error(error.data.message || error.message);
+      toast.error(error.data.message || error.error);
     }
   };
 
@@ -88,7 +88,7 @@ const OrderDetailsScreen = () => {
     });
   };
   function onError(error) {
-    toast.error(error.message || error.error);
+    toast.error(error.data.message || error.error);
   }
 
   useEffect(() => {

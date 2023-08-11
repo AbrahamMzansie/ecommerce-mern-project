@@ -31,7 +31,7 @@ const ProductListScreen = () => {
       console.log(newProduct);
       toast.success("Product created successfully");
     } catch (error) {
-      toast.error(error?.data?.message || error.message);
+      toast.error(error?.data?.message || error.error);
     }
   };
 

@@ -111,7 +111,7 @@ const getUsers = asyncHandler(async (req, res) => {
 });
 
 const getUserById = asyncHandler(async (req, res) => {
-  const users = await UserModel.find(req.user.id).select("-password");
+  const users = await UserModel.findById(req.params.id).select("-password");
   if (users) {
     res.status(200).send(users);
   } else {
