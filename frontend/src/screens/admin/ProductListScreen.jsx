@@ -4,29 +4,47 @@ import Loader from "../../components/Loader";
 import { toast } from "react-toastify";
 import Message from "../../components/Message";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import {
-  Button,
-  Row,
-  Col,
-  ListGroup,
-  Image,
-  Card,
-  ListGroupItem,
-  Spinner,
-  Table,
-} from "react-bootstrap";
+import { Button, Row, Col, Spinner, Table } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
+import {
+  useCreateNewProductMutation,
+  useDeleteProductMutation,
+} from "../../slices/productSlice";
 
 const ProductListScreen = () => {
   const {
     data: productList,
     error,
     isLoading: isLoadingProducts,
+    refetch,
   } = useGetProductsQuery();
-  
-  const deleteHandler = () =>{
-    toast.error("Deleted Successfully");
-  }
+
+  const [createNewProduct, { isLoading: createProductLoading }] =
+    useCreateNewProductMutation();
+  const [deleteProduct, { isLoading: loadingDeleteProduct }] =
+    useDeleteProductMutation();
+
+  const createNewProductHandler = async () => {
+    try {
+      const newProduct = await createNewProduct().unwrap();
+      refetch();
+      console.log(newProduct);
+      toast.success("Product created successfully");
+    } catch (error) {
+      toast.error(error?.data?.message || error.message);
+    }
+  };
+
+  const deleteHandler = async (productId) => {
+    try {
+      await deleteProduct(productId).unwrap();
+      toast.success("product deleted Successfully");
+    } catch (error) {
+      toast.error(error?.data.message || error.error);
+    }
+
+    refetch();
+  };
   if (isLoadingProducts) {
     return <Loader />;
   }
@@ -46,8 +64,21 @@ const ProductListScreen = () => {
           <h1>Products</h1>
         </Col>
         <Col className="text-end">
-          <Button className="btn-sm m-3">
-            <FaEdit /> Create Product
+          <Button
+            disabled={createProductLoading}
+            onClick={createNewProductHandler}
+            className="btn-sm m-3"
+          >
+            {createProductLoading ? (
+              <>
+                <Spinner animation="border" size="sm" />
+                {"processing"}
+              </>
+            ) : (
+              <>
+                <FaEdit /> Create Product
+              </>
+            )}
           </Button>
         </Col>
       </Row>
@@ -79,7 +110,11 @@ const ProductListScreen = () => {
                   className="btn-sm"
                   onClick={() => deleteHandler(product._id)}
                 >
-                  <FaTrash style={{ color: "white" }} />
+                  {loadingDeleteProduct ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    <FaTrash style={{ color: "white" }} />
+                  )}
                 </Button>
               </td>
             </tr>
