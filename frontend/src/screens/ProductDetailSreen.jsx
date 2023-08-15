@@ -21,6 +21,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { addToCart } from "../slices/cartSlice";
 import { toast } from "react-toastify";
+import Meta from "../components/Meta";
 
 const ProductDetailSreen = () => {
   const [qty, setQty] = useState(1);
@@ -60,7 +61,7 @@ const ProductDetailSreen = () => {
   };
 
   return (
-    <>
+    <>   
       <Link className="btn btn-light my-3" to="/">
         Home
       </Link>
@@ -72,6 +73,7 @@ const ProductDetailSreen = () => {
         </Message>
       ) : (
         <>
+         <Meta title = {product?.name} description = {product?.description}/>
           <Row>
             <Col md={5}>
               <Image src={product.image} alt={product.name} fluid />

@@ -1,12 +1,17 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import ProductModel from "../models/productModel.js";
 
-const getProducts = asyncHandler(async (req, res) => {  
-  const pageSize = 2 ;
-  const page = Number(req.query.pageNumber) || 2;
-  const count = await ProductModel.countDocuments();
-  const products = await ProductModel.find({}).limit(pageSize).skip(pageSize * (page-1));
-  res.status(200).json({products , page , pages : Math.ceil(count / pageSize)});
+const getProducts = asyncHandler(async (req, res) => {
+  const pageSize = 10;
+  const page = Number(req.query.pageNumber) || 1;
+  const keyWord = req.query.keyWord
+    ? { name: { $regex: req.query.keyWord, $options: "i" } }
+    : {};
+  const count = await ProductModel.countDocuments({ ...keyWord });
+  const products = await ProductModel.find({ ...keyWord })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+  res.status(200).json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
 const deleteProduct = asyncHandler(async (req, res) => {
@@ -26,6 +31,13 @@ const getProductById = asyncHandler(async (req, res) => {
   }
   res.status(404);
   throw new Error("Product not found");
+});
+
+const getTopProducts = asyncHandler(async (req, res) => {
+  
+  const product = await ProductModel.find({}).sort({ rating: -1 }).limit(3);
+  console.log("MMMMMMMMMMMMMMMMMMMMM" , product);
+  res.status(200).json(product);
 });
 
 const createProduct = asyncHandler(async (req, res) => {
@@ -113,6 +125,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 
 export {
   getProducts,
+  getTopProducts,
   getProductById,
   createProduct,
   updateProduct,

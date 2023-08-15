@@ -1,26 +1,39 @@
 import React from "react";
 import { Row, Col } from "react-bootstrap";
 import { useGetProductsQuery } from "../slices/productSlice";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Product from "../components/Product";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Pagenate from "../components/Pagenate";
-
+import ProductCarousel from "../components/ProductCarousel";
+import Meta from "../components/Meta";
 
 const HomeScreen = () => {
-  const {pageNumber} = useParams();
-  const { data, isLoading, error } = useGetProductsQuery({pageNumber});
-  
+  const { pageNumber, keyWord } = useParams();
+  const { data, isLoading, error } = useGetProductsQuery({
+    pageNumber,
+    keyWord,
+  });
 
-   return (
+  return (
     <>
+      {!keyWord ? (
+        <ProductCarousel />
+      ) : (
+        <Link to="/" className="btn btn-light">
+          Go Back
+        </Link>
+      )}
       {isLoading ? (
-      <Loader />
+        <Loader />
       ) : error ? (
-        <Message variant = "danger">{error?.data?.message || error?.error}</Message>
+        <Message variant="danger">
+          {error?.data?.message || error?.error}
+        </Message>
       ) : (
         <>
+          <Meta />
           <h1>Latest Products</h1>
           <Row>
             {data.products.map((product) => (
@@ -29,9 +42,11 @@ const HomeScreen = () => {
               </Col>
             ))}
           </Row>
-          <Pagenate pages={data.pages} page={data.page} >
-
-          </Pagenate>
+          <Pagenate
+            pages={data.pages}
+            page={data.page}
+            keyWord={keyWord ? keyWord : ""}
+          ></Pagenate>
         </>
       )}
     </>

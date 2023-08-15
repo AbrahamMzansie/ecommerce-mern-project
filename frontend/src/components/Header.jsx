@@ -10,6 +10,7 @@ import { useLogoutUserMutation } from "../slices/userSlice";
 import { logout } from "../slices/authSlice";
 import logo from "../assets/logo.png";
 import { toast } from "react-toastify";
+import SearchBox from "./SearchBox";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -37,9 +38,10 @@ const Header = () => {
               Mzansie Shopping
             </Navbar.Brand>
           </LinkContainer>
-          <NavbarToggle aria-controls="basic-navbar-nav" />
-          <NavbarCollapse id="basic-navbar-nav">
+          <NavbarToggle aria-controls="basic-navbar-nav" />         
+          <NavbarCollapse id="basic-navbar-nav">         
             <Nav className="ms-auto">
+            <SearchBox/>
               <LinkContainer to="/cart">
                 <Nav.Link>
                   <FaShoppingCart />

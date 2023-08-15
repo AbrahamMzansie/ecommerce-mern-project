@@ -7,6 +7,7 @@ import {
   createRoutesFromElements,
 } from "react-router-dom";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import {HelmetProvider} from "react-helmet-async";
 import "./assets/styles/index.css";
 import "./assets/styles/bootstrap.custom.css";
 import { Provider } from "react-redux";
@@ -36,6 +37,8 @@ const route = createBrowserRouter(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<HomeScreen />} />
       <Route path="/page/:pageNumber" element={<HomeScreen />} />
+      <Route path="/search/:keyWord" element={<HomeScreen />} />
+      <Route path="/search/:keyWord/page/:PageNumber" element={<HomeScreen />} />
       <Route path="/product/:id" element={<ProductDetailScreen />} />
       <Route path="/cart" element={<CartScreen />} />
       <Route path="/login" element={<LoginScreen />} />
@@ -64,11 +67,13 @@ const route = createBrowserRouter(
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
+    <HelmetProvider>
     <Provider store={store}>
       <PayPalScriptProvider deferLoading={true}>
         <RouterProvider router={route} />
       </PayPalScriptProvider>
     </Provider>
+    </HelmetProvider>
   </React.StrictMode>
 );
 
