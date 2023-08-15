@@ -2,7 +2,7 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import ProductModel from "../models/productModel.js";
 
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = 10;
+  const pageSize = process.env.PAGENATION_LIMIT || 8;
   const page = Number(req.query.pageNumber) || 1;
   const keyWord = req.query.keyWord
     ? { name: { $regex: req.query.keyWord, $options: "i" } }
@@ -36,7 +36,6 @@ const getProductById = asyncHandler(async (req, res) => {
 const getTopProducts = asyncHandler(async (req, res) => {
   
   const product = await ProductModel.find({}).sort({ rating: -1 }).limit(3);
-  console.log("MMMMMMMMMMMMMMMMMMMMM" , product);
   res.status(200).json(product);
 });
 
