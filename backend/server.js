@@ -8,7 +8,7 @@ import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
-import  fs   from 'fs';
+
 
 dotenv.config();
 
@@ -23,9 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(cookieParser());
-app.get("/", (req, res) => {
-  res.send("APP is running");
-});
+
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
@@ -36,12 +34,7 @@ app.get("/api/config/paypal", (req, res) =>
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
 
-// if (!fs.existsSync("/uploads")) {
-//   fs.mkdirSync("/uploads");
-//   console.log('Created uploads folder.')
-// } else {
-//   console.log('Uploads folder already exists!');
-// }
+
 
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
