@@ -8,6 +8,7 @@ import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import cookieParser from "cookie-parser";
+import  fs   from 'fs';
 
 dotenv.config();
 
@@ -35,11 +36,35 @@ app.get("/api/config/paypal", (req, res) =>
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
 
-const __dirname = path.resolve();
-app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+if (!fs.existsSync("/uploads")) {
+  fs.mkdirSync("/uploads");
+  console.log('Created uploads folder.')
+} else {
+  console.log('Uploads folder already exists!');
+}
+
+if (process.env.NODE_ENV === 'production') {
+  const __dirname = path.resolve();
+  console.log(__dirname);
+  
+  app.use('/uploads', express.static('uploads'));
+  
+  // Update the path to reach the 'build' folder inside 'frontend'
+  app.use(express.static(path.join(__dirname, '..', 'frontend/build')));
+  
+  const root = path.join(__dirname, '..', 'frontend', 'build', 'index.html')
+  
+  app.get('*', (req, res) => {
+      res.sendFile(path.resolve(root) , 'index.html')
+  });
+} else {
+  app.get('/', (req, res) => {
+      res.send({ message: 'API is working fine.' });
+  })
+}
 app.use(errorHandler);
 app.use(notFound);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running in ${process.env.NODE_ENV} on port ${PORT}`);
 });
