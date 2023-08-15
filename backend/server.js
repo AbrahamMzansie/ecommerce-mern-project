@@ -36,12 +36,12 @@ app.get("/api/config/paypal", (req, res) =>
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
 
-if (!fs.existsSync("/uploads")) {
-  fs.mkdirSync("/uploads");
-  console.log('Created uploads folder.')
-} else {
-  console.log('Uploads folder already exists!');
-}
+// if (!fs.existsSync("/uploads")) {
+//   fs.mkdirSync("/uploads");
+//   console.log('Created uploads folder.')
+// } else {
+//   console.log('Uploads folder already exists!');
+// }
 
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
