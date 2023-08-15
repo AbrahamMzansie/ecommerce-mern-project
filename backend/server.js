@@ -38,22 +38,18 @@ app.get("/api/config/paypal", (req, res) =>
 
 if (process.env.NODE_ENV === 'production') {
   const __dirname = path.resolve();
-  console.log(__dirname);
-  
-  app.use('/uploads', express.static('uploads'));
-  
-  // Update the path to reach the 'build' folder inside 'frontend'
-  app.use(express.static(path.join(__dirname, '..', 'frontend/build')));
-  
-  const root = path.join(__dirname, '..', 'frontend', 'build', 'index.html')
-  
-  app.get('*', (req, res) => {
-      res.sendFile(path.resolve(root) , 'index.html')
-  });
+  app.use('/uploads', express.static('/var/data/uploads'));
+  app.use(express.static(path.join(__dirname, '/frontend/build')));
+
+  app.get('*', (req, res) =>
+    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+  );
 } else {
+  const __dirname = path.resolve();
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
   app.get('/', (req, res) => {
-      res.send({ message: 'API is working fine.' });
-  })
+    res.send('API is running....');
+  });
 }
 app.use(errorHandler);
 app.use(notFound);
