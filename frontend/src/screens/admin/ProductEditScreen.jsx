@@ -73,7 +73,7 @@ const ProductEditScreen = () => {
         category,
         countInStock,
         brand,
-        image
+        image,
       }).unwrap();
       refetch();
       toast.success("Product updated Successfull");
@@ -87,7 +87,9 @@ const ProductEditScreen = () => {
     return <Loader />;
   }
   if (error) {
-    return <Message variant="danger">{error.data.message || error.error}</Message>;
+    return (
+      <Message variant="danger">{error.data.message || error.error}</Message>
+    );
   }
   return (
     <>
@@ -110,11 +112,17 @@ const ProductEditScreen = () => {
           <Form.Group controlId="description" className="my-3">
             <Form.Label>Description</Form.Label>
             <Form.Control
+              as="textarea"
+              rows={3}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            ></Form.Control>
+            {/* <Form.Control
               type="description"
               placeholder="Product Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-            />
+            /> */}
           </Form.Group>
           <Form.Group controlId="price" className="my-3">
             <Form.Label>Price</Form.Label>

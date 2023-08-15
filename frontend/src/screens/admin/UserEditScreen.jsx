@@ -18,7 +18,7 @@ const UserEditScreen = () => {
     error,
     refetch,
   } = useGetUserDetailsQuery(userId);
-  
+
   const [updateUser, { isLoading: isLoadingUpdateUser }] =
     useUpdateUserMutation();
 
@@ -44,7 +44,7 @@ const UserEditScreen = () => {
         email,
         isAdmin,
       }).unwrap();
-      refetch();
+      refetch();     
       toast.success("user updated Successfull");
       navigate("/admin/user-list");
     } catch (error) {
@@ -56,7 +56,9 @@ const UserEditScreen = () => {
     return <Loader />;
   }
   if (error) {
-    return <Message variant="danger">{error.data.message || error.error}</Message>;
+    return (
+      <Message variant="danger">{error.data.message || error.error}</Message>
+    );
   }
   return (
     <>
@@ -87,8 +89,14 @@ const UserEditScreen = () => {
           </Form.Group>
 
           <Form.Group controlId="admin" className="my-3">
-            <Form.Label>Admin</Form.Label>
-            <Form.Check checked={user.isAdmin} type="checkbox" id="isAdmin" />
+            {/* <Form.Label>Admin</Form.Label> */}
+            <Form.Check
+              label="Admin"
+              onChange={(e) => setIsAdmin(Boolean(e.target.checked))}
+              checked={isAdmin}
+              type="checkbox"
+              id="isAdmin"
+            />
           </Form.Group>
 
           <Button

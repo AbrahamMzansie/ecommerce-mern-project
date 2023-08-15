@@ -10,14 +10,17 @@ import {
   useCreateNewProductMutation,
   useDeleteProductMutation,
 } from "../../slices/productSlice";
+import { useParams } from "react-router-dom";
+import Pagenate from "../../components/Pagenate";
 
 const ProductListScreen = () => {
+  const {pageNumber} = useParams();
   const {
-    data: productList,
+    data,
     error,
     isLoading: isLoadingProducts,
     refetch,
-  } = useGetProductsQuery();
+  } = useGetProductsQuery({pageNumber});
 
   const [createNewProduct, { isLoading: createProductLoading }] =
     useCreateNewProductMutation();
@@ -94,7 +97,7 @@ const ProductListScreen = () => {
           </tr>
         </thead>
         <tbody>
-          {productList.map((product, index) => (
+          {data.products.map((product, index) => (
             <tr key={product._id}>
               <td>{index + 1}</td>
               <td>{product.name}</td>
@@ -122,6 +125,9 @@ const ProductListScreen = () => {
           ))}
         </tbody>
       </Table>
+      <Pagenate isAdmin = {true} pages={data.pages} page={data.page} >
+
+</Pagenate>
     </>
   );
 };
