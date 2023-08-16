@@ -7,6 +7,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import NavbarToggle from "react-bootstrap/esm/NavbarToggle";
 import NavbarCollapse from "react-bootstrap/esm/NavbarCollapse";
 import { useLogoutUserMutation } from "../slices/userSlice";
+import { resetCart } from '../slices/cartSlice';
 import { logout } from "../slices/authSlice";
 import logo from "../assets/logo.png";
 import { toast } from "react-toastify";
@@ -23,6 +24,7 @@ const Header = () => {
     try {
       await logoutUser().unwrap();
       dispatch(logout());
+      dispatch(resetCart()); // Add this line
       navigate("/login");
     } catch (error) {
       toast.error(error.data.message || error.error);
