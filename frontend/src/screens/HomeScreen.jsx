@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState, useEffect} from "react";
 import { Row, Col } from "react-bootstrap";
 import { useGetProductsQuery } from "../slices/productSlice";
 import { Link, useParams } from "react-router-dom";
@@ -10,10 +10,36 @@ import ProductCarousel from "../components/ProductCarousel";
 import Meta from "../components/Meta";
 
 const HomeScreen = () => {
+
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  useEffect(() => {
+    const getLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLatitude(position.coords.latitude);
+            setLongitude(position.coords.longitude);
+          },
+          (error) => {
+            console.log(error.message);
+          }
+        );
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+    };
+    getLocation();
+  }, []);
+
   const { pageNumber, keyWord } = useParams();
+  
+ 
   const { data, isLoading, error } = useGetProductsQuery({
     pageNumber,
     keyWord,
+    latitude, longitude 
   });
 
   return (

@@ -1,5 +1,8 @@
 import express from "express";
 const productRoutes = express.Router();
+// import requestIp from 'request-ip';
+// import useragent from 'express-useragent';
+// import  geoip from 'geoip-lite';
 import { isAdmin, protect } from "../middleware/authMiddleware.js";
 import {
   getProducts,

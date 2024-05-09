@@ -1,8 +1,31 @@
 import asyncHandler from "../middleware/asyncHandler.js";
 import ProductModel from "../models/productModel.js";
+import AddressModel from "../models/addressModel.js";
 
 const getProducts = asyncHandler(async (req, res) => {
   const pageSize = process.env.PAGENATION_LIMIT || 8;
+
+  const userAgent = req.get('User-Agent');
+
+  const ipAddress = req.connection.remoteAddress;   
+
+  if(req.query.latitude !=null && req.query.longitude !=null){
+    const newAddress = new AddressModel({
+      latitude: req.query.latitude,
+      longtitude: req.query.longitude,
+      ipAddress: ipAddress,
+      userAgent: userAgent,
+      description: "sample Description",
+      image: "/images/sample.jpg",
+      price: 0.0,
+      stock: 0.0,
+      category: "Sample Category",
+      brand: "sample brand",
+    });
+    const createdNewAddress = await newAddress.save();
+
+    console.log("QQQQQQQQQQQQQQQQQQQQQQQQQQ",createdNewAddress);
+  }
   const page = Number(req.query.pageNumber) || 1;
   const keyWord = req.query.keyWord
     ? { name: { $regex: req.query.keyWord, $options: "i" } }
@@ -34,6 +57,14 @@ const getProductById = asyncHandler(async (req, res) => {
 });
 
 const getTopProducts = asyncHandler(async (req, res) => {
+
+  const userAgent = req.get('User-Agent');
+    
+    // console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB" , userAgent);
+    // const locationResponse = await axios.get(`http://ip-api.com/json/${ip}`);
+    // locationData = locationResponse.data;
+    // console.log(`URL: ${url}, User Agent: ${userAgent}, IP: ${ip}`);
+    // console.log('Location:', locationData);
   
   const product = await ProductModel.find({}).sort({ rating: -1 }).limit(3);
   res.status(200).json(product);
